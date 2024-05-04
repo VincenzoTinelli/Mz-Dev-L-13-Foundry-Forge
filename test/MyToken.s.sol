@@ -30,7 +30,7 @@ contract MyTokenTest is Test {
 
     // ======= Initial state =======
 
-    function testInitialState() public {
+    function testInitialState() view public {
         assertEq(myToken.name(), name);
         assertEq(myToken.symbol(), symbol);
         assertEq(myToken.decimals(), decimals);
@@ -39,30 +39,32 @@ contract MyTokenTest is Test {
 
     // ======= Functionality tests =======
 
-    function testFailUnauthorisedMint(uint256 amount) public {
-        vm.prank(owner);
+    function testFailUnauthorisedMinter(uint amount) public {
+        vm.prank(user);
         myToken.mint(user, amount);
     }
 
-    function testMintZeroAddress(uint256 amount) public {
+    function testMintZeroAddress(uint amount) public {
         vm.prank(owner);
         myToken.mint(ZERO_ADDRESS, amount);
     }
 
-    function testIncreaseTotalSupply(uint256 amount) public {
+    function testIncreaseTotalSupply() public {
         uint256 expectedTotalSupply = initialSupply + amount;
         vm.prank(owner);
         myToken.mint(owner, amount);
         assertEq(myToken.totalSupply(), expectedTotalSupply);
     }
 
-    function testIncreaseRecipientBalance(uint256 amount) public {
+    function testIncreaseRecipientBalance() public {
+        uint amount = 1000 * 1e18;
         vm.prank(owner);
         myToken.mint(user, amount);
         assertEq(myToken.balanceOf(user), amount);
     }
 
-    function testEmitTransferEventForMint(uint256 amount) public {
+    function testEmitTransferEventForMint(uint amount) public {
+        uint amount = 1000 * 1e18;
         vm.expectEmit(true,true,false,true);
         emit Transfer(ZERO_ADDRESS, user, amount);
         vm.prank(owner);

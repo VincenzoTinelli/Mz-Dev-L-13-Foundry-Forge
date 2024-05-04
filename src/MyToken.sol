@@ -15,6 +15,7 @@ contract MyToken is ERC20, Ownable {
     }
 
     function burn(address from, uint256 amount) public onlyOwner {
+        require(msg.sender == owner(), "MyToken: only owner can burn tokens");
         _burn(from, amount);
     }
 }
